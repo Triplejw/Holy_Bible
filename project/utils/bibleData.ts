@@ -1,8 +1,33 @@
 // This is a simplified version of Bible data for demonstration purposes
 // In a real app, this would be a comprehensive dataset or connect to a Bible API
 
+import bibleData from '@/assets/Bible-Database/English/bible.json';
+
+interface BibleBook {
+  name: string;
+  chapters: number;
+  testament: 'old' | 'new';
+}
+
+interface BibleVerse {
+  Verseid: string;
+  Verse: string;
+}
+
+interface BibleChapter {
+  Verse: BibleVerse[];
+}
+
+interface BibleBookData {
+  Chapter: BibleChapter[];
+}
+
+interface BibleData {
+  Book: BibleBookData[];
+}
+
 // List of books with chapter counts
-export const BIBLE_BOOKS = [
+export const BIBLE_BOOKS: BibleBook[] = [
   // Old Testament
   { name: 'Genesis', chapters: 50, testament: 'old' },
   { name: 'Exodus', chapters: 40, testament: 'old' },
@@ -115,24 +140,23 @@ function generateMockVerses(book, chapter, numVerses = 30) {
 }
 
 // Get all Bible book data
-export function getBibleData() {
+export function getBibleData(): BibleBook[] {
   return BIBLE_BOOKS;
 }
 
 // Get verses for a specific chapter
-export function getChapterVerses(book, chapter) {
-  // Check if we have sample verses for this book and chapter
-  if (SAMPLE_VERSES[book] && SAMPLE_VERSES[book][chapter]) {
-    return SAMPLE_VERSES[book][chapter];
-  }
+export function getChapterVerses(book: string, chapter: number): { verse: number; text: string }[] {
+  const bookIndex = BIBLE_BOOKS.findIndex(b => b.name === book);
+  if (bookIndex === -1) return [];
 
-  // If not in our sample data, generate placeholder verses
-  // Get the book data to know how many verses to generate
-  const bookData = BIBLE_BOOKS.find(b => b.name === book);
-  if (!bookData) return [];
+  const bookData = (bibleData as BibleData).Book[bookIndex];
+  if (!bookData || !bookData.Chapter || !bookData.Chapter[chapter - 1]) return [];
 
-  // Use a consistent number of verses based on chapter number
-  const versesCount = 20 + (chapter % 10); // Between 20-29 verses
-  
-  return generateMockVerses(book, chapter, versesCount);
+  const chapterData = bookData.Chapter[chapter - 1];
+  if (!chapterData.Verse) return [];
+
+  return chapterData.Verse.map(verse => ({
+    verse: parseInt(verse.Verseid.slice(-2)),
+    text: verse.Verse
+  }));
 }

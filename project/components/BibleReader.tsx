@@ -19,7 +19,16 @@ import { Book as BookIcon, Menu, BookOpen, ArrowLeft, ArrowRight, Info } from 'l
 
 const { width } = Dimensions.get('window');
 
-export default function BibleReader({ initialPosition }) {
+interface InitialPosition {
+  book?: string;
+  chapter?: number;
+}
+
+interface BibleReaderProps {
+  initialPosition?: InitialPosition;
+}
+
+export default function BibleReader({ initialPosition }: BibleReaderProps) {
   const { colors } = useTheme();
   const { 
     currentBook, 
@@ -35,7 +44,7 @@ export default function BibleReader({ initialPosition }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isChapterSelectorOpen, setIsChapterSelectorOpen] = useState(false);
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef<ScrollView>(null);
   
   const drawerAnimation = useRef(new Animated.Value(0)).current;
   
@@ -59,7 +68,7 @@ export default function BibleReader({ initialPosition }) {
     outputRange: [-width * 0.7, 0],
   });
 
-  const handleBookSelect = (bookName) => {
+  const handleBookSelect = (bookName: string) => {
     setCurrentBook(bookName);
     setCurrentChapter(1);
     setIsDrawerOpen(false);
@@ -70,7 +79,7 @@ export default function BibleReader({ initialPosition }) {
     }).start();
   };
 
-  const handleChapterSelect = (chapter) => {
+  const handleChapterSelect = (chapter: number) => {
     setCurrentChapter(chapter);
     setIsChapterSelectorOpen(false);
     scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: false });
@@ -126,7 +135,9 @@ export default function BibleReader({ initialPosition }) {
       >
         {verseData.map((verse) => (
           <View key={verse.verse} style={styles.verseContainer}>
-            <Text style={[styles.verseNumber, { color: colors.primary }]}>{verse.verse}</Text>
+            <Text style={[styles.verseNumber, { color: colors.primary }]}>
+              {verse.verse + 1}
+            </Text>
             <Text style={[styles.verseText, { color: colors.text }]}>{verse.text}</Text>
           </View>
         ))}
