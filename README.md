@@ -7,7 +7,7 @@ A fully responsive Holy Bible app developed using React Native and Expo Go. The 
 - 🔍 Search and navigate through books, chapters, and verses
 - 🌙 Dark/Light mode support
 - 📲 Works on Android, iOS, and Web via Expo
-- 📶 Offline-ready architecture (optional if implemented)
+- 📶 Offline-ready architecture
 
 ## 🚀 Getting Started
 
