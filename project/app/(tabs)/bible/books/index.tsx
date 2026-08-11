@@ -1,91 +1,83 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
-import { ChevronRight } from 'lucide-react-native';
 import { tokens, useTheme } from '@/context/ThemeContext';
 import { BIBLE_BOOKS } from '@/utils/bibleData';
+import SearchField from '@/components/SearchField';
+import ListRow from '@/components/ListRow';
 
 export default function BooksScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { testament } = useLocalSearchParams<{ testament?: string }>();
+  const [query, setQuery] = useState('');
 
-  const books = testament
+  const inTestament = testament
     ? BIBLE_BOOKS.filter((book) => book.testament === testament)
     : BIBLE_BOOKS;
+
+  const term = query.trim().toLowerCase();
+  const books = term
+    ? inTestament.filter((book) => book.name.toLowerCase().includes(term))
+    : inTestament;
 
   const openBook = (name: string) =>
     router.push({ pathname: '/(tabs)/bible/books/[book]', params: { book: name } });
 
   const title =
-    testament === 'old'
-      ? 'Old Testament'
-      : testament === 'new'
-        ? 'New Testament'
-        : 'Books';
+    testament === 'old' ? 'Old Testament' : testament === 'new' ? 'New Testament' : 'Books';
 
   return (
     <>
       <Stack.Screen options={{ title }} />
+
+      <View style={[styles.search, { backgroundColor: colors.background }]}>
+        <SearchField
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Find a book"
+          label={`Search ${title.toLowerCase()}`}
+        />
+      </View>
+
       <ScrollView
         style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={{
-          paddingTop: tokens.spacing[2],
-          paddingBottom: insets.bottom + tokens.spacing[6],
-        }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + tokens.spacing[6] }}
         contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         {books.map((book) => (
-          <TouchableOpacity
+          <ListRow
             key={book.name}
+            title={book.name}
+            subtitle={`${book.chapters} chapters`}
             onPress={() => openBook(book.name)}
-            style={[styles.row, { borderBottomColor: colors.border }]}
-            accessibilityRole="button"
-            accessibilityLabel={`${book.name}, ${book.chapters} chapters`}
-          >
-            <View style={styles.rowText}>
-              <Text style={[styles.bookName, { color: colors.text }]}>
-                {book.name}
-              </Text>
-              <Text
-                style={[styles.chapterCount, { color: colors.textSecondary }]}
-              >
-                {book.chapters} chapters
-              </Text>
-            </View>
-            <ChevronRight size={20} color={colors.textSecondary} />
-          </TouchableOpacity>
+          />
         ))}
+
+        {books.length === 0 ? (
+          <Text style={[styles.empty, { color: colors.textSecondary }]}>
+            No book matches “{query.trim()}”.
+          </Text>
+        ) : null}
       </ScrollView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: tokens.spacing[3],
+  search: {
     paddingHorizontal: tokens.spacing[5],
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingTop: tokens.spacing[2],
+    paddingBottom: tokens.spacing[3],
   },
-  rowText: {
-    flex: 1,
-  },
-  bookName: {
-    fontSize: tokens.fontSize.lg,
-    fontFamily: 'Sans-Medium',
-  },
-  chapterCount: {
+  empty: {
     fontSize: tokens.fontSize.md,
     fontFamily: 'Sans-Regular',
-    marginTop: tokens.spacing[0.5],
+    textAlign: 'center',
+    paddingHorizontal: tokens.spacing[5],
+    paddingVertical: tokens.spacing[8],
   },
 });
