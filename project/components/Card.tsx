@@ -95,14 +95,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: tokens.spacing[4],
     marginBottom: tokens.spacing[3],
   },
+  // Android pads above and below the glyphs, which drops text a few pixels
+  // against an icon in the same centred row.
   stripTitle: {
     fontSize: tokens.fontSize.md,
     fontFamily: 'Sans-Medium',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   stripSubtitle: {
     flex: 1,
     textAlign: 'right',
     fontSize: tokens.fontSize.md,
     fontFamily: 'Sans-Regular',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
 });
