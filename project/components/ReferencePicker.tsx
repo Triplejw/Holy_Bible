@@ -22,6 +22,8 @@ type ReferencePickerProps = {
   currentBook: string;
   currentChapter: number;
   onSelectReference: (bookName: string, chapter: number) => void;
+  /** Narrows the book list to one testament. Both are listed when unset. */
+  testament?: 'old' | 'new';
 };
 
 export default function ReferencePicker({
@@ -30,6 +32,7 @@ export default function ReferencePicker({
   currentBook,
   currentChapter,
   onSelectReference,
+  testament,
 }: ReferencePickerProps) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
@@ -90,7 +93,12 @@ export default function ReferencePicker({
     setStep('book');
   };
 
-  const modalTitle = step === 'book' ? 'Select Book' : `Select Chapter - ${selectedBook}`;
+  const showOldTestament = testament !== 'new';
+  const showNewTestament = testament !== 'old';
+  const newTestamentTitleGap = showOldTestament ? tokens.spacing[4] : 0;
+
+  const bookStepTitle = testament === 'old' ? 'Old Testament' : testament === 'new' ? 'New Testament' : 'Select Book';
+  const modalTitle = step === 'book' ? bookStepTitle : `Select Chapter - ${selectedBook}`;
 
   // Pre-render list of books
   const oldBooksList = oldTestamentBooks.map((book) => {
@@ -198,11 +206,23 @@ export default function ReferencePicker({
               contentContainerStyle={{ paddingBottom: insets.bottom + tokens.spacing[4] }}
               showsVerticalScrollIndicator={false}
             >
-              <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Old Testament</Text>
-              {oldBooksList}
-              
-              <Text style={[styles.sectionTitle, { color: colors.textSecondary, marginTop: tokens.spacing[4] }]}>New Testament</Text>
-              {newBooksList}
+              {showOldTestament ? (
+                <>
+                  <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                    Old Testament
+                  </Text>
+                  {oldBooksList}
+                </>
+              ) : null}
+
+              {showNewTestament ? (
+                <>
+                  <Text style={[styles.sectionTitle, { color: colors.textSecondary, marginTop: newTestamentTitleGap }]}>
+                    New Testament
+                  </Text>
+                  {newBooksList}
+                </>
+              ) : null}
             </ScrollView>
           ) : (
             <FlatList

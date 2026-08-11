@@ -16,7 +16,7 @@ import ReferencePicker from '@/components/ReferencePicker';
 import SummaryModal from '@/components/SummaryModal';
 import { Info, BookOpen } from 'lucide-react-native';
 
-export default function BibleReader({ initialPosition }) {
+export default function BibleReader({ initialPosition, browseRequest }) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { 
@@ -31,6 +31,7 @@ export default function BibleReader({ initialPosition }) {
   const { fontSize, lineHeight } = useReadingPreferences();
   
   const [isReferencePickerOpen, setIsReferencePickerOpen] = useState(false);
+  const [pickerTestament, setPickerTestament] = useState(undefined);
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   
@@ -60,13 +61,30 @@ export default function BibleReader({ initialPosition }) {
     }
   };
 
-  // Compose horizontal swipe gestures for chapter navigation
+  // Arriving from a testament card on the home screen opens the picker on
+  // that testament. The request carries a timestamp so tapping the same card
+  // twice still counts as a new request.
+  useEffect(() => {
+    if (!browseRequest?.testament) return;
+    setPickerTestament(browseRequest.testament);
+    setIsReferencePickerOpen(true);
+  }, [browseRequest?.testament, browseRequest?.at]);
+
+  const openReferencePicker = () => {
+    setPickerTestament(undefined);
+    setIsReferencePickerOpen(true);
+  };
+
+  // runOnJS, because a gesture callback is a worklet on the UI thread by
+  // default and these handlers set React state.
   const flingLeft = Gesture.Fling()
     .direction(Directions.LEFT)
+    .runOnJS(true)
     .onStart(navigateToNextChapter);
 
   const flingRight = Gesture.Fling()
     .direction(Directions.RIGHT)
+    .runOnJS(true)
     .onStart(navigateToPreviousChapter);
 
   const gesture = Gesture.Race(flingLeft, flingRight);
@@ -86,7 +104,7 @@ export default function BibleReader({ initialPosition }) {
         ]}
       >
         <TouchableOpacity 
-          onPress={() => setIsReferencePickerOpen(true)}
+          onPress={openReferencePicker}
           style={styles.referenceButton}
           accessibilityRole="button"
           accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
@@ -141,6 +159,7 @@ export default function BibleReader({ initialPosition }) {
         currentBook={currentBook}
         currentChapter={currentChapter}
         onSelectReference={handleSelectReference}
+        testament={pickerTestament}
       />
 
       {/* Summary Modal */}

@@ -22,6 +22,16 @@ export default function HomeScreen() {
   const openReader = () => router.push('/(tabs)/bible');
   const openSearch = () => router.push('/(tabs)/search');
 
+  // `at` makes a repeat tap a distinct request, so the picker reopens.
+  const browseTestament = (testament: 'old' | 'new') =>
+    router.push({
+      pathname: '/(tabs)/bible',
+      params: { testament, at: Date.now().toString() },
+    });
+
+  const browseOldTestament = () => browseTestament('old');
+  const browseNewTestament = () => browseTestament('new');
+
   return (
     <PageLayout>
       <Card
@@ -55,7 +65,7 @@ export default function HomeScreen() {
             title="Old Testament"
             subtitle="39 books"
             icon={<Scroll size={24} color={colors.primary} />}
-            onPress={openReader}
+            onPress={browseOldTestament}
           />
         </View>
         <View style={styles.testamentCard}>
@@ -63,7 +73,7 @@ export default function HomeScreen() {
             title="New Testament"
             subtitle="27 books"
             icon={<Library size={24} color={colors.primary} />}
-            onPress={openReader}
+            onPress={browseNewTestament}
           />
         </View>
       </View>
