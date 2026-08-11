@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -71,19 +71,22 @@ export default function BibleReader({ initialPosition }) {
 
   const openBooks = () => router.push('/(tabs)/bible/books');
 
-  // runOnJS, because a gesture callback is a worklet on the UI thread by
-  // default and these handlers set React state.
-  const flingLeft = Gesture.Fling()
-    .direction(Directions.LEFT)
-    .runOnJS(true)
-    .onStart(navigateToNextChapter);
+  // Memoised, or every render rebinds the recognisers and can drop a swipe
+  // mid-gesture. runOnJS, because a gesture callback is a worklet on the UI
+  // thread by default and these handlers set React state.
+  const gesture = useMemo(() => {
+    const flingLeft = Gesture.Fling()
+      .direction(Directions.LEFT)
+      .runOnJS(true)
+      .onStart(navigateToNextChapter);
 
-  const flingRight = Gesture.Fling()
-    .direction(Directions.RIGHT)
-    .runOnJS(true)
-    .onStart(navigateToPreviousChapter);
+    const flingRight = Gesture.Fling()
+      .direction(Directions.RIGHT)
+      .runOnJS(true)
+      .onStart(navigateToPreviousChapter);
 
-  const gesture = Gesture.Race(flingLeft, flingRight);
+    return Gesture.Race(flingLeft, flingRight);
+  }, [currentChapter, totalChapters]);
   const headerText = `${currentBook} ${currentChapter}`;
 
   return (

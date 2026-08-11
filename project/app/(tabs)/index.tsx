@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { BookOpen, Search, Sunrise, Library, Scroll } from 'lucide-react-native';
 import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
+import { useReaderIntent } from '@/context/ReaderIntentContext';
 import { getVerseOfTheDay } from '@/utils/verseOfTheDay';
 import PageLayout from '@/components/PageLayout';
 import Card from '@/components/Card';
@@ -11,16 +12,32 @@ import Card from '@/components/Card';
 export default function HomeScreen() {
   const { colors } = useTheme();
   const { lastPosition } = useLastPosition();
-  // Fixed for the calendar day, and a chapter lookup — not per render.
-  const dailyVerse = useMemo(() => getVerseOfTheDay(), []);
+  const { requestReference } = useReaderIntent();
+
+  // Keyed to the date, so a session left open overnight still rolls over.
+  const today = new Date().toDateString();
+  const dailyVerse = useMemo(() => getVerseOfTheDay(), [today]);
 
   const resumeSubtitle = `${lastPosition.book} ${lastPosition.chapter}`;
   const verseReference = dailyVerse
     ? `${dailyVerse.book} ${dailyVerse.chapter}:${dailyVerse.verse}`
     : 'Unavailable';
 
-  const openReader = () => router.push('/(tabs)/bible');
   const openSearch = () => router.push('/(tabs)/search');
+
+  // The reader's tab is already mounted, so the reference travels through the
+  // intent context rather than as a route param.
+  const openReference = (book: string, chapter: number) => {
+    requestReference(book, chapter);
+    router.navigate('/(tabs)/bible');
+  };
+
+  const openDailyVerse = () => {
+    if (!dailyVerse) return;
+    openReference(dailyVerse.book, dailyVerse.chapter);
+  };
+
+  const resumeReading = () => openReference(lastPosition.book, lastPosition.chapter);
 
   const browseTestament = (testament: 'old' | 'new') =>
     router.push({ pathname: '/(tabs)/bible/books', params: { testament } });
@@ -33,7 +50,7 @@ export default function HomeScreen() {
       <Card
         title="Verse of the day"
         icon={<Sunrise size={24} color={colors.onPrimary} />}
-        onPress={openReader}
+        onPress={openDailyVerse}
         emphasis
       >
         <Text style={[styles.verseText, { color: colors.onPrimary }]}>{dailyVerse?.text}</Text>
@@ -51,7 +68,7 @@ export default function HomeScreen() {
         title="Continue"
         subtitle={resumeSubtitle}
         icon={<BookOpen size={20} color={colors.primary} />}
-        onPress={openReader}
+        onPress={resumeReading}
         compact
       />
 

@@ -20,22 +20,12 @@ export default function Layout() {
     'Inter-Bold': Inter_700Bold,
   });
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
           <ReaderIntentProvider>
-            <RootLayout />
+            <RootLayout fontsLoaded={fontsLoaded} />
           </ReaderIntentProvider>
         </ThemeProvider>
       </SafeAreaProvider>
@@ -43,10 +33,24 @@ export default function Layout() {
   );
 }
 
-function RootLayout() {
-  const { colors, isDark } = useTheme();
+function RootLayout({ fontsLoaded }: { fontsLoaded: boolean }) {
+  const { colors, isDark, isReady } = useTheme();
+
+  // Both gates, or a dark-mode user gets a light frame before the saved
+  // preference resolves.
+  const canPaint = fontsLoaded && isReady;
+
+  useEffect(() => {
+    if (canPaint) {
+      SplashScreen.hideAsync();
+    }
+  }, [canPaint]);
 
   const statusBarStyle = isDark ? 'light' : 'dark';
+
+  if (!canPaint) {
+    return null;
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>

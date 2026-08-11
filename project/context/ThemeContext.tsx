@@ -154,17 +154,21 @@ type ThemeContextType = {
   isDark: boolean;
   toggleTheme: () => void;
   colors: ThemeColors;
+  /** False until the saved preference has been read, so nothing paints early. */
+  isReady: boolean;
 };
 
 const ThemeContext = createContext<ThemeContextType>({
   isDark: false,
   toggleTheme: () => {},
   colors: lightTheme,
+  isReady: false,
 });
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const colorScheme = useColorScheme();
   const [isDark, setIsDark] = useState<boolean>(colorScheme === 'dark');
+  const [isReady, setIsReady] = useState(false);
 
   // Load saved theme preference on mount
   useEffect(() => {
@@ -179,6 +183,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
       } catch (error) {
         console.log('Error loading theme preference:', error);
+      } finally {
+        setIsReady(true);
       }
     };
 
@@ -198,7 +204,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const colors = isDark ? darkTheme : lightTheme;
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme, colors }}>
+    <ThemeContext.Provider value={{ isDark, toggleTheme, colors, isReady }}>
       {children}
     </ThemeContext.Provider>
   );
