@@ -5344,7 +5344,7 @@ const SAMPLE_VERSES = {
       { verse: 13, text: "These are the commandments and the ordinances which Yahweh commanded by Moses to the children of Israel in the plains of Moab by the Jordan at Jericho." },
   ]
 },
-'Deutronomy': {
+'Deuteronomy': {
   1: [
       { verse: 1, text: "These are the words which Moses spoke to all Israel beyond the Jordan in the wilderness, in the Arabah opposite Suf, between Paran, Tophel, Laban, Hazeroth, and Dizahab." },
       { verse: 2, text: "It is eleven days’ journey from Horeb by the way of Mount Seir to Kadesh Barnea." },
