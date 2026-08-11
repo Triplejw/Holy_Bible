@@ -29,10 +29,21 @@ returns nothing.
 **Why:** a hardcoded 50pt height overrode React Navigation's own inset handling,
 so the bar collided with the home indicator; and a JS-drawn bar never quite
 matches the platform.
-**How:** `expo-router/unstable-native-tabs` — a real `UITabBarController` on
-iOS and Material tabs on Android, so the inset, the blur and the accessibility
-behaviour are the system's. SF Symbols on iOS with Material vector icons as the
-Android source. Four tabs: Home, Bible, Search, Settings.
+**How:** `expo-router/unstable-native-tabs`, so the inset, the blur and the
+accessibility behaviour are the system's. Three tabs — Home, Bible, Search —
+with SF Symbols on iOS and Ionicons rasterised in theme colours for Android,
+because expo-router's own helper rasterises every glyph at a hardcoded white.
+
+**Known limit:** on SDK 54 with react-native-screens 4.16, `selectedIcon` is
+declared iOS-only and the Android path reads only `icon`, so the active tab
+shows a filled icon on iOS and a colour change on Android. SDK 56 fixes it, and
+there is no Expo Go build for 56.
+
+### Settings off the tab bar — `app/settings.tsx`
+**Why:** settings is a detour, not a destination, and it was taking a quarter
+of the bar.
+**How:** a pushed stack route with a native back control and no title, reached
+from the button in the top-right of the page shell.
 
 ### Screen layout convention
 **Why:** each screen re-implemented its own shell, and the placeholder screens
@@ -56,30 +67,36 @@ derived string — earns a name above the return.
 home screen.
 **How:** `router.replace('/(tabs)')` instead of `/(tabs)/bible`.
 
+### Page layout shell — `components/PageLayout.tsx`
+**Why:** every screen was re-implementing the same safe-area padding and scroll
+container, and each copy drifted from the others.
+**How:** one shell that owns the insets, the scroll container and the top
+action row, whose default action is the settings button. Screens pass content
+and nothing else; `scrollable` and `gutter` cover the cases that differ.
+
+### Home screen — `app/(tabs)/index.tsx`
+**Why:** the app opened straight into whatever chapter was last read, with no
+surface for anything that is not the reader.
+**How:** a continue-reading card, the verse of the day, and search plus the two
+testaments as cards — a card list that takes devotional and hymns later without
+restructuring. No streaks.
+
+### Verse of the day — `utils/verseOfTheDay.ts`
+**Why:** the home screen needs a daily anchor, and there is no network in the
+app.
+**How:** the calendar date seeds an index into a curated chapter list, so the
+verse is fixed until midnight and nothing is fetched or stored. Curated rather
+than whole-Bible so it never lands on a genealogy.
+
 ### Psalms verse data fix — `utils/bibleData.ts`
 **Why:** `BIBLE_BOOKS` named the book `Psalms` while the verse data keyed it
 `Psalm`, so all 150 chapters silently fell back to generated placeholder text.
-**How:** the data key renamed to `Psalms`, keeping the display name correct and
-matching the reference format used elsewhere.
+**How:** the `SAMPLE_VERSES` key renamed to `Psalms`, which fixes the lookup
+and keeps the displayed book name correct.
 
 ## Blocked — awaiting approval
 
-Two placeholder screens (`app/(tabs)/index.tsx`, `app/(tabs)/search.tsx`) exist
-so the four-tab bar has no dead tabs. Each is a themed container with a heading
-and nothing else. Their real content is below.
-
-### Home screen
-**Why:** the app opens straight into whatever chapter was last read, with no
-surface for anything that is not the reader.
-**How:** a resume card, a verse-of-the-day card, and search / Old Testament /
-New Testament as cards below it — a card list that takes Devotional and Hymns
-later without restructuring. No streaks.
-
-### Verse of the day
-**Why:** the home screen needs a daily anchor, and there is no network in the
-app.
-**How:** the calendar date seeds the pick, so it is chosen once per day, stays
-fixed until midnight, and needs no storage or fetch.
+The Search tab is still a placeholder — the page shell with a single heading.
 
 ### Search screen
 **Why:** the Search tab is a placeholder, and 66 books are only reachable by
