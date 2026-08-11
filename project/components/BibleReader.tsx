@@ -5,19 +5,16 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Animated,
-  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handler';
 import { useBibleData } from '@/hooks/useBibleData';
 import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
-import BookDrawer from '@/components/BookDrawer';
-import ChapterSelector from '@/components/ChapterSelector';
+import { useReadingPreferences } from '@/hooks/useReadingPreferences';
+import ReferencePicker from '@/components/ReferencePicker';
 import SummaryModal from '@/components/SummaryModal';
-import { Menu, BookOpen, ArrowLeft, ArrowRight, Info } from 'lucide-react-native';
-
-const { width } = Dimensions.get('window');
+import { Info, BookOpen } from 'lucide-react-native';
 
 export default function BibleReader({ initialPosition }) {
   const { colors } = useTheme();
@@ -25,20 +22,17 @@ export default function BibleReader({ initialPosition }) {
   const { 
     currentBook, 
     currentChapter, 
-    bibleData, 
     verseData, 
     totalChapters,
     setCurrentBook, 
     setCurrentChapter 
   } = useBibleData(initialPosition);
   const { saveLastPosition } = useLastPosition();
+  const { fontSize, lineHeight } = useReadingPreferences();
   
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isChapterSelectorOpen, setIsChapterSelectorOpen] = useState(false);
+  const [isReferencePickerOpen, setIsReferencePickerOpen] = useState(false);
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
-  const scrollViewRef = useRef(null);
-  
-  const drawerAnimation = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
   
   useEffect(() => {
     if (verseData.length > 0) {
@@ -46,34 +40,9 @@ export default function BibleReader({ initialPosition }) {
     }
   }, [currentBook, currentChapter, verseData]);
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-    Animated.timing(drawerAnimation, {
-      toValue: isDrawerOpen ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const drawerTranslateX = drawerAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-width * 0.7, 0],
-  });
-
-  const handleBookSelect = (bookName) => {
+  const handleSelectReference = (bookName: string, chapter: number) => {
     setCurrentBook(bookName);
-    setCurrentChapter(1);
-    setIsDrawerOpen(false);
-    Animated.timing(drawerAnimation, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handleChapterSelect = (chapter) => {
     setCurrentChapter(chapter);
-    setIsChapterSelectorOpen(false);
     scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: false });
   };
 
@@ -91,11 +60,17 @@ export default function BibleReader({ initialPosition }) {
     }
   };
 
-  const prevArrowColor = currentChapter === 1 ? colors.textSecondary : colors.primary;
-  const nextArrowColor = currentChapter === totalChapters ? colors.textSecondary : colors.primary;
-  
+  // Compose horizontal swipe gestures for chapter navigation
+  const flingLeft = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onStart(navigateToNextChapter);
+
+  const flingRight = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .onStart(navigateToPreviousChapter);
+
+  const gesture = Gesture.Race(flingLeft, flingRight);
   const headerText = `${currentBook} ${currentChapter}`;
-  const indicatorText = `Chapter ${currentChapter} of ${totalChapters}`;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -110,112 +85,65 @@ export default function BibleReader({ initialPosition }) {
           }
         ]}
       >
-        <TouchableOpacity onPress={toggleDrawer} style={styles.headerButton}>
-          <Menu size={24} color={colors.text} />
+        <TouchableOpacity 
+          onPress={() => setIsReferencePickerOpen(true)}
+          style={styles.referenceButton}
+          accessibilityRole="button"
+          accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
+        >
+          <BookOpen size={20} color={colors.primary} style={styles.chapterIcon} />
+          <Text style={[styles.headerTitle, { color: colors.text }]}>
+            {headerText}
+          </Text>
         </TouchableOpacity>
-        
-        <View style={styles.titleContainer}>
-          <TouchableOpacity 
-            onPress={() => setIsChapterSelectorOpen(true)}
-            style={styles.chapterSelector}
-          >
-            <BookOpen size={20} color={colors.primary} style={styles.chapterIcon} />
-            <Text style={[styles.headerTitle, { color: colors.text }]}>
-              {headerText}
-            </Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.summaryButton}
-            onPress={() => setSummaryModalVisible(true)}
-          >
-            <Info size={20} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity 
+          style={styles.summaryButton}
+          onPress={() => setSummaryModalVisible(true)}
+          accessibilityRole="button"
+          accessibilityLabel="View chapter summary"
+        >
+          <Info size={20} color={colors.primary} />
+        </TouchableOpacity>
       </View>
 
       {/* Bible Content */}
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + tokens.spacing[4] }]}
-        contentInsetAdjustmentBehavior="automatic"
-        showsVerticalScrollIndicator={false}
-      >
-        {verseData.map((verse) => (
-          <View key={verse.verse} style={styles.verseContainer}>
-            <Text style={[styles.verseNumber, { color: colors.primary }]}>{verse.verse}</Text>
-            <Text style={[styles.verseText, { color: colors.text }]}>{verse.text}</Text>
-          </View>
-        ))}
-      </ScrollView>
-
-      {/* Navigation Bar */}
-      <View
-        style={[
-          styles.navigationBar,
-          {
-            backgroundColor: colors.background,
-            borderTopColor: colors.border,
-            paddingBottom: insets.bottom + tokens.spacing[3],
-          }
-        ]}
-      >
-        <TouchableOpacity 
-          onPress={navigateToPreviousChapter}
-          style={[styles.navButton, currentChapter === 1 && styles.navButtonDisabled]}
-          disabled={currentChapter === 1}
+      <GestureDetector gesture={gesture}>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.scrollView}
+          contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + tokens.spacing[4] }]}
+          contentInsetAdjustmentBehavior="automatic"
+          showsVerticalScrollIndicator={false}
         >
-          <ArrowLeft size={24} color={prevArrowColor} />
-        </TouchableOpacity>
+          {/* One paragraph per verse: numbers stay inline, but a chapter does
+              not collapse into an unbroken wall of text. A long-press handler
+              attaches to the verse Text below. */}
+          {verseData.map((verse) => (
+            <Text
+              key={verse.verse}
+              style={[styles.verseParagraph, { fontSize, lineHeight, color: colors.text }]}
+            >
+              <Text style={[styles.verseNumberInline, { color: colors.primary }]}>
+                {verse.verse}
+              </Text>
+              {'  '}
+              {verse.text}
+            </Text>
+          ))}
+        </ScrollView>
+      </GestureDetector>
 
-        <View style={styles.chapterIndicator}>
-          <Text style={[styles.chapterText, { color: colors.text }]}>
-            {indicatorText}
-          </Text>
-        </View>
-
-        <TouchableOpacity 
-          onPress={navigateToNextChapter}
-          style={[styles.navButton, currentChapter === totalChapters && styles.navButtonDisabled]}
-          disabled={currentChapter === totalChapters}
-        >
-          <ArrowRight size={24} color={nextArrowColor} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Book Drawer */}
-      <Animated.View
-        style={[
-          styles.drawer,
-          { transform: [{ translateX: drawerTranslateX }], backgroundColor: colors.backgroundSecondary }
-        ]}
-      >
-        <BookDrawer 
-          onBookSelect={handleBookSelect} 
-          currentBook={currentBook}
-          onClose={toggleDrawer}
-        />
-      </Animated.View>
-
-      {/* Backdrop */}
-      {isDrawerOpen && (
-        <TouchableOpacity
-          style={[styles.backdrop, { backgroundColor: colors.overlay }]}
-          onPress={toggleDrawer}
-          activeOpacity={1}
-        />
-      )}
-
-      {/* Modals */}
-      <ChapterSelector
-        isVisible={isChapterSelectorOpen}
-        onClose={() => setIsChapterSelectorOpen(false)}
-        totalChapters={totalChapters}
+      {/* Unified Reference Picker Sheet */}
+      <ReferencePicker
+        isVisible={isReferencePickerOpen}
+        onClose={() => setIsReferencePickerOpen(false)}
+        currentBook={currentBook}
         currentChapter={currentChapter}
-        onSelectChapter={handleChapterSelect}
+        onSelectReference={handleSelectReference}
       />
 
+      {/* Summary Modal */}
       <SummaryModal
         isVisible={summaryModalVisible}
         onClose={() => setSummaryModalVisible(false)}
@@ -233,21 +161,12 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: tokens.spacing[4],
     paddingVertical: tokens.spacing[3],
     borderBottomWidth: 1,
   },
-  headerButton: {
-    padding: tokens.spacing[2],
-  },
-  titleContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginLeft: tokens.spacing[2],
-  },
-  chapterSelector: {
+  referenceButton: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -267,53 +186,11 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     padding: tokens.spacing[4],
   },
-  verseContainer: {
-    flexDirection: 'row',
+  verseParagraph: {
+    fontFamily: 'Inter-Regular',
     marginBottom: tokens.spacing[3],
   },
-  verseNumber: {
-    fontSize: 14,
+  verseNumberInline: {
     fontFamily: 'Inter-Medium',
-    marginRight: tokens.spacing[2],
-    minWidth: tokens.spacing[6],
-  },
-  verseText: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
-    lineHeight: 16 * tokens.lineHeight.normal,
-  },
-  navigationBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: tokens.spacing[4],
-    paddingTop: tokens.spacing[3],
-    borderTopWidth: 1,
-  },
-  navButton: {
-    padding: tokens.spacing[2],
-  },
-  navButtonDisabled: {
-    opacity: 0.5,
-  },
-  chapterIndicator: {
-    alignItems: 'center',
-  },
-  chapterText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
-  },
-  drawer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    width: '70%',
-    zIndex: 1000,
-  },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 999,
   },
 });

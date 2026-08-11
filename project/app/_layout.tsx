@@ -7,6 +7,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
@@ -28,11 +30,13 @@ export default function Layout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <RootLayout />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <RootLayout />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -66,6 +70,12 @@ function RootLayout() {
           name="(tabs)"
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            title: '',
           }}
         />
       </Stack>
