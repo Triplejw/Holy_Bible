@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { Book } from 'lucide-react-native';
 
-export default function CustomHeader({ navigation, route }) {
+export default function CustomHeader() {
   const { colors } = useTheme();
 
   return (

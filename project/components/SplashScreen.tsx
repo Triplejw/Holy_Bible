@@ -3,7 +3,11 @@ import { StyleSheet, View, Text, Animated, Easing } from 'react-native';
 import { Book } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
 
-export default function SplashScreen({ onFinish }) {
+interface SplashScreenProps {
+  onFinish: () => void;
+}
+
+export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const { colors } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -21,7 +25,7 @@ export default function SplashScreen({ onFinish }) {
         toValue: 1,
         duration: 800,
         useNativeDriver: true,
-        easing: Easing.out(Easing.back()),
+        easing: Easing.out(Easing.back(1.70158)),
       }),
     ]).start();
 

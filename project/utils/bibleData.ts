@@ -1,3 +1,5 @@
+import { Book, Verse } from '@/types/bible';
+
 // This is a simplified version of Bible data for demonstration purposes
 // In a real app, this would be a comprehensive dataset or connect to a Bible API
 
@@ -126984,8 +126986,8 @@ const SAMPLE_VERSES = {
 };
 
 // Generate mock verse data for a given book and chapter
-function generateMockVerses(book, chapter, numVerses = 30) {
-  const verses = [];
+function generateMockVerses(book: string, chapter: number, numVerses: number = 30): Verse[] {
+  const verses: Verse[] = [];
   for (let i = 1; i <= numVerses; i++) {
     verses.push({
       verse: i,
@@ -126996,20 +126998,24 @@ function generateMockVerses(book, chapter, numVerses = 30) {
 }
 
 // Get all Bible book data
-export function getBibleData() {
-  return BIBLE_BOOKS;
+export function getBibleData(): Book[] {
+  return BIBLE_BOOKS as Book[];
 }
 
 // Get verses for a specific chapter
-export function getChapterVerses(book, chapter) {
+export function getChapterVerses(book: string, chapter: number): Verse[] {
+  // Cast the massive, raw SAMPLE_VERSES data blob to index it dynamically by book and chapter.
+  // This is required because SAMPLE_VERSES is a 127k-line literal whose inferred shape cannot be indexed dynamically.
+  const typedSampleVerses = SAMPLE_VERSES as Record<string, Record<number, Verse[]>>;
+
   // Check if we have sample verses for this book and chapter
-  if (SAMPLE_VERSES[book] && SAMPLE_VERSES[book][chapter]) {
-    return SAMPLE_VERSES[book][chapter];
+  if (typedSampleVerses[book] && typedSampleVerses[book][chapter]) {
+    return typedSampleVerses[book][chapter];
   }
 
   // If not in our sample data, generate placeholder verses
   // Get the book data to know how many verses to generate
-  const bookData = BIBLE_BOOKS.find(b => b.name === book);
+  const bookData = (BIBLE_BOOKS as Book[]).find(b => b.name === book);
   if (!bookData) return [];
 
   // Use a consistent number of verses based on chapter number
