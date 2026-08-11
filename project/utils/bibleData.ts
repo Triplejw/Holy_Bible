@@ -56829,7 +56829,7 @@ const SAMPLE_VERSES = {
       }
     ]
   },
-  "Psalm": {
+  "Psalms": {
     "1": [
       {
         "verse": 1,
