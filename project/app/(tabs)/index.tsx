@@ -22,12 +22,8 @@ export default function HomeScreen() {
   const openReader = () => router.push('/(tabs)/bible');
   const openSearch = () => router.push('/(tabs)/search');
 
-  // `at` makes a repeat tap a distinct request, so the picker reopens.
   const browseTestament = (testament: 'old' | 'new') =>
-    router.push({
-      pathname: '/(tabs)/bible',
-      params: { testament, at: Date.now().toString() },
-    });
+    router.push({ pathname: '/books', params: { testament } });
 
   const browseOldTestament = () => browseTestament('old');
   const browseNewTestament = () => browseTestament('new');

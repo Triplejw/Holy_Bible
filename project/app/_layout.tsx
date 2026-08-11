@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ReaderIntentProvider } from '@/context/ReaderIntentContext';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -33,7 +34,9 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <RootLayout />
+          <ReaderIntentProvider>
+            <RootLayout />
+          </ReaderIntentProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -74,6 +77,18 @@ function RootLayout() {
         />
         <Stack.Screen
           name="settings"
+          options={{
+            title: '',
+          }}
+        />
+        <Stack.Screen
+          name="books/index"
+          options={{
+            title: 'Books',
+          }}
+        />
+        <Stack.Screen
+          name="books/[book]"
           options={{
             title: '',
           }}

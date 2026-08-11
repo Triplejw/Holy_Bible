@@ -12,11 +12,12 @@ import { useBibleData } from '@/hooks/useBibleData';
 import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
 import { useReadingPreferences } from '@/hooks/useReadingPreferences';
-import ReferencePicker from '@/components/ReferencePicker';
+import { useReaderIntent } from '@/context/ReaderIntentContext';
 import SummaryModal from '@/components/SummaryModal';
+import { router } from 'expo-router';
 import { Info, BookOpen } from 'lucide-react-native';
 
-export default function BibleReader({ initialPosition, browseRequest }) {
+export default function BibleReader({ initialPosition }) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { 
@@ -30,8 +31,7 @@ export default function BibleReader({ initialPosition, browseRequest }) {
   const { saveLastPosition } = useLastPosition();
   const { fontSize, lineHeight } = useReadingPreferences();
   
-  const [isReferencePickerOpen, setIsReferencePickerOpen] = useState(false);
-  const [pickerTestament, setPickerTestament] = useState(undefined);
+  const { pendingReference, clearReference } = useReaderIntent();
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   
@@ -61,19 +61,15 @@ export default function BibleReader({ initialPosition, browseRequest }) {
     }
   };
 
-  // Arriving from a testament card on the home screen opens the picker on
-  // that testament. The request carries a timestamp so tapping the same card
-  // twice still counts as a new request.
+  // A reference picked on the books pages lands here, since the reader's tab
+  // is already mounted and would not receive it as a route param.
   useEffect(() => {
-    if (!browseRequest?.testament) return;
-    setPickerTestament(browseRequest.testament);
-    setIsReferencePickerOpen(true);
-  }, [browseRequest?.testament, browseRequest?.at]);
+    if (!pendingReference) return;
+    handleSelectReference(pendingReference.book, pendingReference.chapter);
+    clearReference();
+  }, [pendingReference]);
 
-  const openReferencePicker = () => {
-    setPickerTestament(undefined);
-    setIsReferencePickerOpen(true);
-  };
+  const openBooks = () => router.push('/books');
 
   // runOnJS, because a gesture callback is a worklet on the UI thread by
   // default and these handlers set React state.
@@ -104,7 +100,7 @@ export default function BibleReader({ initialPosition, browseRequest }) {
         ]}
       >
         <TouchableOpacity 
-          onPress={openReferencePicker}
+          onPress={openBooks}
           style={styles.referenceButton}
           accessibilityRole="button"
           accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
@@ -151,16 +147,6 @@ export default function BibleReader({ initialPosition, browseRequest }) {
           ))}
         </ScrollView>
       </GestureDetector>
-
-      {/* Unified Reference Picker Sheet */}
-      <ReferencePicker
-        isVisible={isReferencePickerOpen}
-        onClose={() => setIsReferencePickerOpen(false)}
-        currentBook={currentBook}
-        currentChapter={currentChapter}
-        onSelectReference={handleSelectReference}
-        testament={pickerTestament}
-      />
 
       {/* Summary Modal */}
       <SummaryModal
