@@ -11,6 +11,7 @@ import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handl
 import { useBibleData } from '@/hooks/useBibleData';
 import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
+import { BIBLE_BOOKS } from '@/utils/bibleData';
 import { useReadingPreferences } from '@/hooks/useReadingPreferences';
 import { useReaderIntent } from '@/context/ReaderIntentContext';
 import SummarySheet from '@/components/SummarySheet';
@@ -91,6 +92,11 @@ export default function BibleReader({ initialPosition }) {
     return Gesture.Race(flingLeft, flingRight);
   }, [currentChapter, totalChapters]);
   const headerText = `${currentBook} ${currentChapter}`;
+  const testament =
+    BIBLE_BOOKS.find(entry => entry.name === currentBook)?.testament === 'new'
+      ? 'New Testament'
+      : 'Old Testament';
+  const chapterCaption = `${testament} · Chapter ${currentChapter} of ${totalChapters}`;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -113,10 +119,13 @@ export default function BibleReader({ initialPosition }) {
             onPress={openBooks}
             style={styles.reference}
             accessibilityRole="button"
-            accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
+            accessibilityLabel={`${headerText}, ${chapterCaption}. Tap to change book or chapter.`}
           >
+            <BookOpen size={32} color={colors.primary} />
             <Text style={[styles.referenceText, { color: colors.text }]}>{headerText}</Text>
-            <BookOpen size={16} color={colors.textSecondary} />
+            <Text style={[styles.referenceCaption, { color: colors.textSecondary }]}>
+              {chapterCaption}
+            </Text>
           </TouchableOpacity>
 
           {/* One paragraph per verse: numbers stay inline, but a chapter does
@@ -165,16 +174,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   reference: {
-    flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center',
     gap: tokens.spacing[2],
-    minHeight: 44,
-    marginBottom: tokens.spacing[5],
+    marginBottom: tokens.spacing[7],
   },
   referenceText: {
-    fontSize: tokens.fontSize.xl,
+    fontSize: tokens.fontSize['2xl'],
     fontFamily: 'Sans-Bold',
+  },
+  referenceCaption: {
+    fontSize: tokens.fontSize.md,
+    fontFamily: 'Sans-Regular',
   },
   fab: {
     position: 'absolute',
