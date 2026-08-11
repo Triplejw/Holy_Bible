@@ -47,7 +47,6 @@ export default function TabsLayout() {
   const homeIcon = useTabIcon('home-outline', 'home');
   const bibleIcon = useTabIcon('book-outline', 'book');
   const searchIcon = useTabIcon('search-outline', 'search');
-  const settingsIcon = useTabIcon('settings-outline', 'settings');
 
   const labelStyle = {
     default: { color: colors.textSecondary, fontFamily: 'Inter-Medium' },
@@ -79,11 +78,6 @@ export default function TabsLayout() {
           sf={{ default: 'magnifyingglass', selected: 'magnifyingglass' }}
           androidSrc={searchIcon}
         />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="settings">
-        <Label>Settings</Label>
-        <Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} androidSrc={settingsIcon} />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

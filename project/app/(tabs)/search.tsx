@@ -1,24 +1,14 @@
-import { StyleSheet, Text, ScrollView } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Text } from 'react-native';
 import { tokens, useTheme } from '@/context/ThemeContext';
+import PageLayout from '@/components/PageLayout';
 
 export default function SearchScreen() {
   const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={{
-        paddingHorizontal: tokens.spacing[6],
-        paddingTop: insets.top + tokens.spacing[6],
-        paddingBottom: insets.bottom + tokens.spacing[6],
-      }}
-      contentInsetAdjustmentBehavior="automatic"
-      showsVerticalScrollIndicator={false}
-    >
+    <PageLayout>
       <Text style={[styles.heading, { color: colors.text }]}>Search</Text>
-    </ScrollView>
+    </PageLayout>
   );
 }
 

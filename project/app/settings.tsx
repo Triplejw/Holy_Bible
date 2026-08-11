@@ -14,7 +14,7 @@ export default function SettingsScreen() {
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.background }}
       contentContainerStyle={{
-        paddingTop: insets.top + tokens.spacing[4],
+        paddingTop: tokens.spacing[4],
         paddingBottom: insets.bottom + tokens.spacing[4],
       }}
       contentInsetAdjustmentBehavior="automatic"
