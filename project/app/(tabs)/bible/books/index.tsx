@@ -21,7 +21,7 @@ export default function BooksScreen() {
     : BIBLE_BOOKS;
 
   const openBook = (name: string) =>
-    router.push(`/books/${encodeURIComponent(name)}`);
+    router.push({ pathname: '/(tabs)/bible/books/[book]', params: { book: name } });
 
   const title =
     testament === 'old'

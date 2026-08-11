@@ -13,9 +13,9 @@ import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
 import { useReadingPreferences } from '@/hooks/useReadingPreferences';
 import { useReaderIntent } from '@/context/ReaderIntentContext';
-import SummaryModal from '@/components/SummaryModal';
+import SummarySheet from '@/components/SummarySheet';
 import { router } from 'expo-router';
-import { Info, BookOpen } from 'lucide-react-native';
+import { Sparkles, BookOpen } from 'lucide-react-native';
 
 export default function BibleReader({ initialPosition }) {
   const { colors } = useTheme();
@@ -32,7 +32,7 @@ export default function BibleReader({ initialPosition }) {
   const { fontSize, lineHeight } = useReadingPreferences();
   
   const { pendingReference, clearReference } = useReaderIntent();
-  const [summaryModalVisible, setSummaryModalVisible] = useState(false);
+  const [summarySheetVisible, setSummarySheetVisible] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function BibleReader({ initialPosition }) {
     clearReference();
   }, [pendingReference]);
 
-  const openBooks = () => router.push('/books');
+  const openBooks = () => router.push('/(tabs)/bible/books');
 
   // runOnJS, because a gesture callback is a worklet on the UI thread by
   // default and these handlers set React state.
@@ -95,29 +95,18 @@ export default function BibleReader({ initialPosition }) {
           {
             backgroundColor: colors.background,
             borderBottomColor: colors.border,
-            paddingTop: insets.top + tokens.spacing[3],
+            paddingTop: insets.top + tokens.spacing[5],
           }
         ]}
       >
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={openBooks}
           style={styles.referenceButton}
           accessibilityRole="button"
           accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
         >
-          <BookOpen size={20} color={colors.primary} style={styles.chapterIcon} />
-          <Text style={[styles.headerTitle, { color: colors.text }]}>
-            {headerText}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.summaryButton}
-          onPress={() => setSummaryModalVisible(true)}
-          accessibilityRole="button"
-          accessibilityLabel="View chapter summary"
-        >
-          <Info size={20} color={colors.primary} />
+          <BookOpen size={18} color={colors.primary} style={styles.chapterIcon} />
+          <Text style={[styles.headerTitle, { color: colors.text }]}>{headerText}</Text>
         </TouchableOpacity>
       </View>
 
@@ -149,9 +138,21 @@ export default function BibleReader({ initialPosition }) {
       </GestureDetector>
 
       {/* Summary Modal */}
-      <SummaryModal
-        isVisible={summaryModalVisible}
-        onClose={() => setSummaryModalVisible(false)}
+      <TouchableOpacity
+        onPress={() => setSummarySheetVisible(true)}
+        style={[
+          styles.fab,
+          { backgroundColor: colors.primary, bottom: insets.bottom + tokens.spacing[6] },
+        ]}
+        accessibilityRole="button"
+        accessibilityLabel={`Summary of ${headerText}`}
+      >
+        <Sparkles size={22} color={colors.onPrimary} />
+      </TouchableOpacity>
+
+      <SummarySheet
+        isVisible={summarySheetVisible}
+        onClose={() => setSummarySheetVisible(false)}
         book={currentBook}
         chapter={currentChapter}
       />
@@ -164,32 +165,38 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: tokens.spacing[4],
-    paddingVertical: tokens.spacing[3],
+    paddingBottom: tokens.spacing[4],
     borderBottomWidth: 1,
   },
   referenceButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 44,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: tokens.fontSize.lg,
     fontFamily: 'Inter-Medium',
   },
   chapterIcon: {
     marginRight: tokens.spacing[2],
   },
-  summaryButton: {
-    padding: tokens.spacing[2],
+  fab: {
+    position: 'absolute',
+    right: tokens.spacing[5],
+    width: 56,
+    height: 56,
+    borderRadius: tokens.radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
-    padding: tokens.spacing[4],
+    paddingHorizontal: tokens.spacing[6],
+    paddingTop: tokens.spacing[5],
   },
   verseParagraph: {
     fontFamily: 'Inter-Regular',

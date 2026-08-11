@@ -23,7 +23,7 @@ export default function HomeScreen() {
   const openSearch = () => router.push('/(tabs)/search');
 
   const browseTestament = (testament: 'old' | 'new') =>
-    router.push({ pathname: '/books', params: { testament } });
+    router.push({ pathname: '/(tabs)/bible/books', params: { testament } });
 
   const browseOldTestament = () => browseTestament('old');
   const browseNewTestament = () => browseTestament('new');

@@ -6,9 +6,11 @@ type ReadingPreferences = {
   lineHeight: number;
 };
 
+// Scripture is read in long sittings, so the body runs a step larger than the
+// rest of the app and loose enough to track across a full column.
 const DEFAULT_PREFERENCES: ReadingPreferences = {
-  fontSize: 16,
-  lineHeight: 24,
+  fontSize: 19,
+  lineHeight: 32,
 };
 
 export const useReadingPreferences = () => {

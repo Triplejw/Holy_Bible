@@ -81,18 +81,6 @@ function RootLayout() {
             title: '',
           }}
         />
-        <Stack.Screen
-          name="books/index"
-          options={{
-            title: 'Books',
-          }}
-        />
-        <Stack.Screen
-          name="books/[book]"
-          options={{
-            title: '',
-          }}
-        />
       </Stack>
     </View>
   );

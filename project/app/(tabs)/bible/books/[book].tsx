@@ -31,7 +31,7 @@ export default function ChaptersScreen() {
 
   const openChapter = (chapter: number) => {
     requestReference(bookName, chapter);
-    router.dismissTo('/(tabs)/bible');
+    router.dismissAll();
   };
 
   // Tiles are sized to divide the row exactly, so the grid fills the width
