@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { router } from 'expo-router';
 import { BookOpen, Sunrise, Library, Scroll } from 'lucide-react-native';
 import { tokens, useTheme } from '@/context/ThemeContext';
-import { useLastPosition } from '@/hooks/useLastPosition';
+import { useLastPosition } from '@/context/LastPositionContext';
 import { useReaderIntent } from '@/context/ReaderIntentContext';
 import { getVerseOfTheDay } from '@/utils/verseOfTheDay';
 import PageLayout from '@/components/PageLayout';

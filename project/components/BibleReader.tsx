@@ -10,18 +10,23 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handler';
 import { useBibleData } from '@/hooks/useBibleData';
 import { tokens, useTheme } from '@/context/ThemeContext';
-import { useLastPosition } from '@/hooks/useLastPosition';
+import { useLastPosition } from '@/context/LastPositionContext';
 import { BIBLE_BOOKS } from '@/utils/bibleData';
 import { useReadingPreferences } from '@/hooks/useReadingPreferences';
 import { useReaderIntent } from '@/context/ReaderIntentContext';
 import SummarySheet from '@/components/SummarySheet';
 import { router } from 'expo-router';
 import { Sparkles, BookOpen } from 'lucide-react-native';
+import { Position } from '@/types/bible';
 
 /** Clears the floating native tab bar, which exposes no height to measure. */
 const FAB_CLEARANCE = 84;
 
-export default function BibleReader({ initialPosition }) {
+interface BibleReaderProps {
+  initialPosition: Position;
+}
+
+export default function BibleReader({ initialPosition }: BibleReaderProps) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { 

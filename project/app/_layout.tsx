@@ -4,6 +4,7 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import * as SystemUI from 'expo-system-ui';
 import { useFonts } from 'expo-font';
 import {
   PlusJakartaSans_400Regular,
@@ -13,6 +14,7 @@ import {
 import { Literata_400Regular, Literata_600SemiBold } from '@expo-google-fonts/literata';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ReaderIntentProvider } from '@/context/ReaderIntentContext';
+import { LastPositionProvider } from '@/context/LastPositionContext';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -34,9 +36,11 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <ReaderIntentProvider>
-            <RootLayout fontsLoaded={fontsLoaded} />
-          </ReaderIntentProvider>
+          <LastPositionProvider>
+            <ReaderIntentProvider>
+              <RootLayout fontsLoaded={fontsLoaded} />
+            </ReaderIntentProvider>
+          </LastPositionProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -55,6 +59,12 @@ function RootLayout({ fontsLoaded }: { fontsLoaded: boolean }) {
       SplashScreen.hideAsync();
     }
   }, [canPaint]);
+
+  // The root view sits behind everything React renders, including the gap as
+  // the native splash tears down. Left alone it is white in both themes.
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(colors.background);
+  }, [colors.background]);
 
   const statusBarStyle = isDark ? 'light' : 'dark';
 

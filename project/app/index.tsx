@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
-import { useLastPosition } from '@/hooks/useLastPosition';
+import { useLastPosition } from '@/context/LastPositionContext';
 import SplashScreen from '@/components/SplashScreen';
 import { useTheme } from '@/context/ThemeContext';
 
