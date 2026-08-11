@@ -77,12 +77,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: tokens.fontSize.lg,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
     marginTop: tokens.spacing[2],
   },
   subtitle: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
     marginTop: tokens.spacing[1],
   },
   strip: {
@@ -97,12 +97,12 @@ const styles = StyleSheet.create({
   },
   stripTitle: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
   },
   stripSubtitle: {
     flex: 1,
     textAlign: 'right',
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
   },
 });

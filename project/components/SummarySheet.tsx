@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: tokens.fontSize.lg,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
   },
   body: {
     flexGrow: 0,
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
     lineHeight: tokens.fontSize.md * tokens.lineHeight.relaxed,
   },
   footnote: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
     marginTop: tokens.spacing[4],
   },
 });

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { router } from 'expo-router';
-import { BookOpen, Search, Sunrise, Library, Scroll } from 'lucide-react-native';
+import { BookOpen, Sunrise, Library, Scroll } from 'lucide-react-native';
 import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
 import { useReaderIntent } from '@/context/ReaderIntentContext';
@@ -22,8 +22,6 @@ export default function HomeScreen() {
   const verseReference = dailyVerse
     ? `${dailyVerse.book} ${dailyVerse.chapter}:${dailyVerse.verse}`
     : 'Unavailable';
-
-  const openSearch = () => router.push('/(tabs)/search');
 
   // The reader's tab is already mounted, so the reference travels through the
   // intent context rather than as a route param.
@@ -58,14 +56,7 @@ export default function HomeScreen() {
       </Card>
 
       <Card
-        title="Search"
-        subtitle="Find a verse by its words"
-        icon={<Search size={24} color={colors.primary} />}
-        onPress={openSearch}
-      />
-
-      <Card
-        title="Continue"
+        title="Continue reading"
         subtitle={resumeSubtitle}
         icon={<BookOpen size={20} color={colors.primary} />}
         onPress={resumeReading}
@@ -97,13 +88,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   verseText: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
     lineHeight: tokens.fontSize.md * tokens.lineHeight.relaxed,
     marginTop: tokens.spacing[2],
   },
   verseReference: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
     marginTop: tokens.spacing[2],
   },
   testaments: {

@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
     marginBottom: tokens.spacing[4],
     marginTop: tokens.spacing[1],
   },
@@ -92,11 +92,11 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
   },
   settingValue: {
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
   },
   option: {
     borderRadius: tokens.radius.lg,
@@ -110,6 +110,6 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
   },
 });

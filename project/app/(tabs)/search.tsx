@@ -15,6 +15,6 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   heading: {
     fontSize: tokens.fontSize['2xl'],
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Sans-Bold',
   },
 });

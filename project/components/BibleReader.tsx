@@ -17,6 +17,9 @@ import SummarySheet from '@/components/SummarySheet';
 import { router } from 'expo-router';
 import { Sparkles, BookOpen } from 'lucide-react-native';
 
+/** Clears the floating native tab bar, which exposes no height to measure. */
+const FAB_CLEARANCE = 84;
+
 export default function BibleReader({ initialPosition }) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
@@ -91,37 +94,31 @@ export default function BibleReader({ initialPosition }) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <View
-        style={[
-          styles.header,
-          {
-            backgroundColor: colors.background,
-            borderBottomColor: colors.border,
-            paddingTop: insets.top + tokens.spacing[5],
-          }
-        ]}
-      >
-        <TouchableOpacity
-          onPress={openBooks}
-          style={styles.referenceButton}
-          accessibilityRole="button"
-          accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
-        >
-          <BookOpen size={18} color={colors.primary} style={styles.chapterIcon} />
-          <Text style={[styles.headerTitle, { color: colors.text }]}>{headerText}</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Bible Content */}
       <GestureDetector gesture={gesture}>
         <ScrollView
           ref={scrollViewRef}
           style={styles.scrollView}
-          contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + tokens.spacing[4] }]}
+          contentContainerStyle={[
+            styles.scrollViewContent,
+            {
+              paddingTop: insets.top + tokens.spacing[6],
+              paddingBottom: insets.bottom + FAB_CLEARANCE,
+            },
+          ]}
           contentInsetAdjustmentBehavior="automatic"
           showsVerticalScrollIndicator={false}
         >
+          <TouchableOpacity
+            onPress={openBooks}
+            style={styles.reference}
+            accessibilityRole="button"
+            accessibilityLabel={`Current reference: ${headerText}. Tap to change book or chapter.`}
+          >
+            <Text style={[styles.referenceText, { color: colors.text }]}>{headerText}</Text>
+            <BookOpen size={16} color={colors.textSecondary} />
+          </TouchableOpacity>
+
           {/* One paragraph per verse: numbers stay inline, but a chapter does
               not collapse into an unbroken wall of text. A long-press handler
               attaches to the verse Text below. */}
@@ -145,7 +142,7 @@ export default function BibleReader({ initialPosition }) {
         onPress={() => setSummarySheetVisible(true)}
         style={[
           styles.fab,
-          { backgroundColor: colors.primary, bottom: insets.bottom + tokens.spacing[6] },
+          { backgroundColor: colors.primary, bottom: insets.bottom + FAB_CLEARANCE },
         ]}
         accessibilityRole="button"
         accessibilityLabel={`Summary of ${headerText}`}
@@ -167,23 +164,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    alignItems: 'center',
-    paddingHorizontal: tokens.spacing[4],
-    paddingBottom: tokens.spacing[4],
-    borderBottomWidth: 1,
-  },
-  referenceButton: {
+  reference: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
+    gap: tokens.spacing[2],
     minHeight: 44,
+    marginBottom: tokens.spacing[5],
   },
-  headerTitle: {
-    fontSize: tokens.fontSize.lg,
-    fontFamily: 'Inter-Medium',
-  },
-  chapterIcon: {
-    marginRight: tokens.spacing[2],
+  referenceText: {
+    fontSize: tokens.fontSize.xl,
+    fontFamily: 'Sans-Bold',
   },
   fab: {
     position: 'absolute',
@@ -202,10 +193,10 @@ const styles = StyleSheet.create({
     paddingTop: tokens.spacing[5],
   },
   verseParagraph: {
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Serif-Regular',
     marginBottom: tokens.spacing[3],
   },
   verseNumberInline: {
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Serif-SemiBold',
   },
 });

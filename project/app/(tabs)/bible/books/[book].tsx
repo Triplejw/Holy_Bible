@@ -92,6 +92,6 @@ const styles = StyleSheet.create({
   },
   chapterNumber: {
     fontSize: tokens.fontSize.lg,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
   },
 });

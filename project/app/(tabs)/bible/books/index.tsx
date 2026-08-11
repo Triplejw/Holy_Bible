@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
   },
   bookName: {
     fontSize: tokens.fontSize.lg,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Sans-Medium',
   },
   chapterCount: {
     fontSize: tokens.fontSize.md,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
     marginTop: tokens.spacing[0.5],
   },
 });

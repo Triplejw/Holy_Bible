@@ -49,8 +49,8 @@ export default function TabsLayout() {
   const searchIcon = useTabIcon('search-outline', 'search');
 
   const labelStyle = {
-    default: { color: colors.textSecondary, fontFamily: 'Inter-Medium' },
-    selected: { color: colors.primary, fontFamily: 'Inter-Medium' },
+    default: { color: colors.textSecondary, fontFamily: 'Sans-Medium' },
+    selected: { color: colors.primary, fontFamily: 'Sans-Medium' },
   };
 
   return (

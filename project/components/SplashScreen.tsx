@@ -70,12 +70,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Sans-Bold',
     marginTop: 24,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Sans-Regular',
   },
 });

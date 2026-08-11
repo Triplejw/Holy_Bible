@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Sans-Bold',
   },
 });

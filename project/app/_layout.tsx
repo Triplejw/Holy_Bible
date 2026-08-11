@@ -4,7 +4,13 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { useFonts, Inter_400Regular, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
+import { useFonts } from 'expo-font';
+import {
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_700Bold,
+} from '@expo-google-fonts/plus-jakarta-sans';
+import { Literata_400Regular, Literata_600SemiBold } from '@expo-google-fonts/literata';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ReaderIntentProvider } from '@/context/ReaderIntentContext';
 
@@ -14,10 +20,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  // Sans for chrome, serif for scripture. Every stylesheet names these keys,
+  // so swapping a family is a change to this map alone.
   const [fontsLoaded] = useFonts({
-    'Inter-Regular': Inter_400Regular,
-    'Inter-Medium': Inter_500Medium,
-    'Inter-Bold': Inter_700Bold,
+    'Sans-Regular': PlusJakartaSans_400Regular,
+    'Sans-Medium': PlusJakartaSans_500Medium,
+    'Sans-Bold': PlusJakartaSans_700Bold,
+    'Serif-Regular': Literata_400Regular,
+    'Serif-SemiBold': Literata_600SemiBold,
   });
 
   return (
