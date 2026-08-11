@@ -12,7 +12,7 @@ export default function Index() {
 
   const handleSplashFinish = () => {
     setShowSplash(false);
-    router.replace('/(tabs)/bible');
+    router.replace('/(tabs)');
   };
 
   return (

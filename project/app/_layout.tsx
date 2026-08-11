@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -27,18 +28,22 @@ export default function Layout() {
   }
 
   return (
-    <ThemeProvider>
-      <RootLayout />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <RootLayout />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
 
 function RootLayout() {
   const { colors, isDark } = useTheme();
 
+  const statusBarStyle = isDark ? 'light' : 'dark';
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <StatusBar style={isDark ? 'light' : 'dark'} />
+      <StatusBar style={statusBarStyle} />
       <Stack
         screenOptions={{
           headerStyle: {

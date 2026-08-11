@@ -7,20 +7,21 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
-  SafeAreaView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBibleData } from '@/hooks/useBibleData';
-import { useTheme } from '@/context/ThemeContext';
+import { tokens, useTheme } from '@/context/ThemeContext';
 import { useLastPosition } from '@/hooks/useLastPosition';
 import BookDrawer from '@/components/BookDrawer';
 import ChapterSelector from '@/components/ChapterSelector';
 import SummaryModal from '@/components/SummaryModal';
-import { Book as BookIcon, Menu, BookOpen, ArrowLeft, ArrowRight, Info } from 'lucide-react-native';
+import { Menu, BookOpen, ArrowLeft, ArrowRight, Info } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 
 export default function BibleReader({ initialPosition }) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const { 
     currentBook, 
     currentChapter, 
@@ -90,10 +91,25 @@ export default function BibleReader({ initialPosition }) {
     }
   };
 
+  const prevArrowColor = currentChapter === 1 ? colors.textSecondary : colors.primary;
+  const nextArrowColor = currentChapter === totalChapters ? colors.textSecondary : colors.primary;
+  
+  const headerText = `${currentBook} ${currentChapter}`;
+  const indicatorText = `Chapter ${currentChapter} of ${totalChapters}`;
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.background }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: colors.background,
+            borderBottomColor: colors.border,
+            paddingTop: insets.top + tokens.spacing[3],
+          }
+        ]}
+      >
         <TouchableOpacity onPress={toggleDrawer} style={styles.headerButton}>
           <Menu size={24} color={colors.text} />
         </TouchableOpacity>
@@ -105,7 +121,7 @@ export default function BibleReader({ initialPosition }) {
           >
             <BookOpen size={20} color={colors.primary} style={styles.chapterIcon} />
             <Text style={[styles.headerTitle, { color: colors.text }]}>
-              {currentBook} {currentChapter}
+              {headerText}
             </Text>
           </TouchableOpacity>
 
@@ -122,7 +138,9 @@ export default function BibleReader({ initialPosition }) {
       <ScrollView
         ref={scrollViewRef}
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContent}
+        contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + tokens.spacing[4] }]}
+        contentInsetAdjustmentBehavior="automatic"
+        showsVerticalScrollIndicator={false}
       >
         {verseData.map((verse) => (
           <View key={verse.verse} style={styles.verseContainer}>
@@ -133,33 +151,36 @@ export default function BibleReader({ initialPosition }) {
       </ScrollView>
 
       {/* Navigation Bar */}
-      <View style={[styles.navigationBar, { backgroundColor: colors.background, borderTopColor: colors.border }]}>
+      <View
+        style={[
+          styles.navigationBar,
+          {
+            backgroundColor: colors.background,
+            borderTopColor: colors.border,
+            paddingBottom: insets.bottom + tokens.spacing[3],
+          }
+        ]}
+      >
         <TouchableOpacity 
           onPress={navigateToPreviousChapter}
-          style={[
-            styles.navButton,
-            currentChapter === 1 && styles.navButtonDisabled
-          ]}
+          style={[styles.navButton, currentChapter === 1 && styles.navButtonDisabled]}
           disabled={currentChapter === 1}
         >
-          <ArrowLeft size={24} color={currentChapter === 1 ? colors.textSecondary : colors.primary} />
+          <ArrowLeft size={24} color={prevArrowColor} />
         </TouchableOpacity>
 
         <View style={styles.chapterIndicator}>
           <Text style={[styles.chapterText, { color: colors.text }]}>
-            Chapter {currentChapter} of {totalChapters}
+            {indicatorText}
           </Text>
         </View>
 
         <TouchableOpacity 
           onPress={navigateToNextChapter}
-          style={[
-            styles.navButton,
-            currentChapter === totalChapters && styles.navButtonDisabled
-          ]}
+          style={[styles.navButton, currentChapter === totalChapters && styles.navButtonDisabled]}
           disabled={currentChapter === totalChapters}
         >
-          <ArrowRight size={24} color={currentChapter === totalChapters ? colors.textSecondary : colors.primary} />
+          <ArrowRight size={24} color={nextArrowColor} />
         </TouchableOpacity>
       </View>
 
@@ -180,7 +201,7 @@ export default function BibleReader({ initialPosition }) {
       {/* Backdrop */}
       {isDrawerOpen && (
         <TouchableOpacity
-          style={styles.backdrop}
+          style={[styles.backdrop, { backgroundColor: colors.overlay }]}
           onPress={toggleDrawer}
           activeOpacity={1}
         />
@@ -201,7 +222,7 @@ export default function BibleReader({ initialPosition }) {
         book={currentBook}
         chapter={currentChapter}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -212,21 +233,19 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    paddingTop: 24,
+    paddingHorizontal: tokens.spacing[4],
+    paddingVertical: tokens.spacing[3],
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E1E8',
   },
   headerButton: {
-    padding: 8,
+    padding: tokens.spacing[2],
   },
   titleContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginLeft: 8,
+    marginLeft: tokens.spacing[2],
   },
   chapterSelector: {
     flexDirection: 'row',
@@ -237,43 +256,43 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
   },
   chapterIcon: {
-    marginRight: 8,
+    marginRight: tokens.spacing[2],
   },
   summaryButton: {
-    padding: 8,
+    padding: tokens.spacing[2],
   },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
-    padding: 16,
+    padding: tokens.spacing[4],
   },
   verseContainer: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: tokens.spacing[3],
   },
   verseNumber: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    marginRight: 8,
-    minWidth: 24,
+    marginRight: tokens.spacing[2],
+    minWidth: tokens.spacing[6],
   },
   verseText: {
     flex: 1,
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    lineHeight: 24,
+    lineHeight: 16 * tokens.lineHeight.normal,
   },
   navigationBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: tokens.spacing[4],
+    paddingTop: tokens.spacing[3],
     borderTopWidth: 1,
   },
   navButton: {
-    padding: 8,
+    padding: tokens.spacing[2],
   },
   navButtonDisabled: {
     opacity: 0.5,
@@ -295,7 +314,6 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 999,
   },
 });

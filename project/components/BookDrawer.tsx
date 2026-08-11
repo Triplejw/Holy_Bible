@@ -11,6 +11,8 @@ export default function BookDrawer({ onBookSelect, currentBook, onClose }) {
   const oldTestamentBooks = BIBLE_BOOKS.filter(book => book.testament === 'old');
   const newTestamentBooks = BIBLE_BOOKS.filter(book => book.testament === 'new');
 
+  const testamentBooks = activeTestament === 'old' ? oldTestamentBooks : newTestamentBooks;
+
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundSecondary }]}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
@@ -20,59 +22,50 @@ export default function BookDrawer({ onBookSelect, currentBook, onClose }) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.tabContainer}>
+      <View style={[styles.tabContainer, { borderBottomColor: colors.border }]}>
         <TouchableOpacity
           style={[
             styles.tabButton,
-            activeTestament === 'old' && 
-            { borderBottomColor: colors.primary, borderBottomWidth: 2 }
+            activeTestament === 'old' && { borderBottomColor: colors.primary, borderBottomWidth: 2 }
           ]}
           onPress={() => setActiveTestament('old')}
         >
-          <Text 
-            style={[
-              styles.tabText, 
-              { color: activeTestament === 'old' ? colors.primary : colors.textSecondary }
-            ]}
-          >
+          <Text style={[styles.tabText, { color: activeTestament === 'old' ? colors.primary : colors.textSecondary }]}>
             Old Testament
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.tabButton,
-            activeTestament === 'new' && 
-            { borderBottomColor: colors.primary, borderBottomWidth: 2 }
+            activeTestament === 'new' && { borderBottomColor: colors.primary, borderBottomWidth: 2 }
           ]}
           onPress={() => setActiveTestament('new')}
         >
-          <Text 
-            style={[
-              styles.tabText, 
-              { color: activeTestament === 'new' ? colors.primary : colors.textSecondary }
-            ]}
-          >
+          <Text style={[styles.tabText, { color: activeTestament === 'new' ? colors.primary : colors.textSecondary }]}>
             New Testament
           </Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.bookList}>
-        {activeTestament === 'old' ? (
-          oldTestamentBooks.map((book) => (
+        {testamentBooks.map((book) => {
+          const isSelected = currentBook === book.name;
+
+          return (
             <TouchableOpacity
               key={book.name}
               style={[
                 styles.bookItem,
-                currentBook === book.name && { backgroundColor: colors.primaryLight + '30' }
+                { borderBottomColor: colors.border },
+                isSelected && { backgroundColor: colors.surfaceSelected }
               ]}
               onPress={() => onBookSelect(book.name)}
             >
               <Text 
                 style={[
-                  styles.bookName, 
+                  styles.bookName,
                   { color: colors.text },
-                  currentBook === book.name && { color: colors.primary, fontFamily: 'Inter-Medium' }
+                  isSelected && { color: colors.primary, fontFamily: 'Inter-Medium' }
                 ]}
               >
                 {book.name}
@@ -81,32 +74,8 @@ export default function BookDrawer({ onBookSelect, currentBook, onClose }) {
                 {book.chapters} chapters
               </Text>
             </TouchableOpacity>
-          ))
-        ) : (
-          newTestamentBooks.map((book) => (
-            <TouchableOpacity
-              key={book.name}
-              style={[
-                styles.bookItem,
-                currentBook === book.name && { backgroundColor: colors.primaryLight + '30' }
-              ]}
-              onPress={() => onBookSelect(book.name)}
-            >
-              <Text 
-                style={[
-                  styles.bookName, 
-                  { color: colors.text },
-                  currentBook === book.name && { color: colors.primary, fontFamily: 'Inter-Medium' }
-                ]}
-              >
-                {book.name}
-              </Text>
-              <Text style={[styles.chapterCount, { color: colors.textSecondary }]}>
-                {book.chapters} chapters
-              </Text>
-            </TouchableOpacity>
-          ))
-        )}
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -134,7 +103,6 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E1E8',
   },
   tabButton: {
     flex: 1,
@@ -152,7 +120,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E1E8',
   },
   bookName: {
     fontSize: 16,

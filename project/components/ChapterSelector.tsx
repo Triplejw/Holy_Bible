@@ -54,28 +54,27 @@ export default function ChapterSelector({
     });
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.chapterItem,
-        currentChapter === item && { 
-          backgroundColor: colors.primary,
-        },
-      ]}
-      onPress={() => {
-        onSelectChapter(item);
-      }}
-    >
-      <Text
+  const renderItem = ({ item }) => {
+    const isSelected = currentChapter === item;
+    const textColor = isSelected ? colors.onPrimary : colors.text;
+
+    return (
+      <TouchableOpacity
         style={[
-          styles.chapterNumber,
-          { color: currentChapter === item ? 'white' : colors.text },
+          styles.chapterItem,
+          { backgroundColor: colors.surfaceMuted },
+          isSelected && { backgroundColor: colors.primary },
         ]}
+        onPress={() => {
+          onSelectChapter(item);
+        }}
       >
-        {item}
-      </Text>
-    </TouchableOpacity>
-  );
+        <Text style={[styles.chapterNumber, { color: textColor }]}>
+          {item}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <Modal
@@ -84,7 +83,7 @@ export default function ChapterSelector({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={styles.modalContainer}>
+      <View style={[styles.modalContainer, { backgroundColor: colors.overlay }]}>
         <View style={[styles.modalContent, { backgroundColor: colors.backgroundSecondary }]}>
           <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
             <Text style={[styles.modalTitle, { color: colors.text }]}>Select Chapter</Text>
@@ -113,7 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',
@@ -147,7 +145,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
   chapterNumber: {
     fontSize: 16,
