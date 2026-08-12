@@ -22,6 +22,15 @@
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d4cedd65-b388-427f-acbf-815fb2ca2056"
+      }
+    },
+    "android": {
+      "package": "com.broken99records.holybible"
     }
   }
 }
