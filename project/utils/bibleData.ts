@@ -22,7 +22,7 @@ export const BIBLE_BOOKS = [
   { name: 'Nehemiah', chapters: 13, testament: 'old' },
   { name: 'Esther', chapters: 10, testament: 'old' },
   { name: 'Job', chapters: 42, testament: 'old' },
-  { name: 'psalm', chapters: 150, testament: 'old' },
+  { name: 'Psalms', chapters: 150, testament: 'old' },
   { name: 'Proverbs', chapters: 31, testament: 'old' },
   { name: 'Ecclesiastes', chapters: 12, testament: 'old' },
   { name: 'Song of Solomon', chapters: 8, testament: 'old' },
@@ -56829,7 +56829,7 @@ const SAMPLE_VERSES = {
       }
     ]
   },
-  "Psalm": {
+  "Psalms": {
     "1": [
       {
         "verse": 1,
