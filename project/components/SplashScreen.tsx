@@ -52,7 +52,7 @@ export default function SplashScreen({ onFinish }) {
       >
         <Image
           source={require('../assets/images/splash.png')}
-          resizeMode="contain"
+          resizeMode="center"
         />
       </Animated.View>
     </View>
