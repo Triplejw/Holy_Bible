@@ -22,7 +22,7 @@ export const BIBLE_BOOKS = [
   { name: 'Nehemiah', chapters: 13, testament: 'old' },
   { name: 'Esther', chapters: 10, testament: 'old' },
   { name: 'Job', chapters: 42, testament: 'old' },
-  { name: 'Psalms', chapters: 150, testament: 'old' },
+  { name: 'psalm', chapters: 150, testament: 'old' },
   { name: 'Proverbs', chapters: 31, testament: 'old' },
   { name: 'Ecclesiastes', chapters: 12, testament: 'old' },
   { name: 'Song of Solomon', chapters: 8, testament: 'old' },
@@ -105427,7 +105427,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 42,
-        "text": "David himself says in the book of Psalms, ‘The Lord said to my Lord, “Sit at my right hand,"
+        "text": "David himself says in the book of psalm, ‘The Lord said to my Lord, “Sit at my right hand,"
       },
       {
         "verse": 43,
@@ -106291,7 +106291,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 44,
-        "text": "He said to them, “This is what I told you, while I was still with you, that all things which are written in the law of Moses, the prophets, and the psalms, concerning me must be fulfilled.”"
+        "text": "He said to them, “This is what I told you, while I was still with you, that all things which are written in the law of Moses, the prophets, and the psalm, concerning me must be fulfilled.”"
       },
       {
         "verse": 45,
@@ -109971,7 +109971,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 20,
-        "text": "For it is written in the book of Psalms, ‘Let his habitation be made desolate. Let no one dwell therein;’ and, ‘Let another take his office.’"
+        "text": "For it is written in the book of psalm, ‘Let his habitation be made desolate. Let no one dwell therein;’ and, ‘Let another take his office.’"
       },
       {
         "verse": 21,
@@ -119655,7 +119655,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 19,
-        "text": "speaking to one another in psalms, hymns, and spiritual songs; singing, and making melody in your heart to the Lord;"
+        "text": "speaking to one another in psalm, hymns, and spiritual songs; singing, and making melody in your heart to the Lord;"
       },
       {
         "verse": 20,
@@ -120515,7 +120515,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 16,
-        "text": "Let the word of Christ dwell in you richly; in all wisdom teaching and admonishing one another with psalms, hymns, and spiritual songs, singing with grace in your heart to the Lord."
+        "text": "Let the word of Christ dwell in you richly; in all wisdom teaching and admonishing one another with psalm, hymns, and spiritual songs, singing with grace in your heart to the Lord."
       },
       {
         "verse": 17,
