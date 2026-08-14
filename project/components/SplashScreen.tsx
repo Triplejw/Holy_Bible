@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, Easing } from 'react-native';
 import { Book } from 'lucide-react-native';
+import { Image } from 'react-native';
 
 export default function SplashScreen({ onFinish }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -49,9 +50,10 @@ export default function SplashScreen({ onFinish }) {
           },
         ]}
       >
-        <Book size={80} color="#3E64FF" />
-        <Text style={styles.title}>Holy Bible</Text>
-        <Text style={styles.subtitle}>Wisdom for every day</Text>
+        <Image
+          source={require('../assets/images/splash.png')}
+          resizeMode="center"
+        />
       </Animated.View>
     </View>
   );

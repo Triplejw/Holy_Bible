@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Holy Bible",
+    "name": "Holy Bible with Creed and Anthems",
     "slug": "holy-bible",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,12 +16,22 @@
     ],
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "expo-web-browser"
     ],
     "scheme": "holy-bible",
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d4cedd65-b388-427f-acbf-815fb2ca2056"
+      }
+    },
+    "android": {
+      "package": "com.broken99records.holybible"
     }
   }
 }
