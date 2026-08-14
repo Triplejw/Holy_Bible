@@ -3,8 +3,33 @@ import { Book, Verse } from '@/types/bible';
 // This is a simplified version of Bible data for demonstration purposes
 // In a real app, this would be a comprehensive dataset or connect to a Bible API
 
+import bibleData from '@/assets/Bible-Database/English/bible.json';
+
+interface BibleBook {
+  name: string;
+  chapters: number;
+  testament: 'old' | 'new';
+}
+
+interface BibleVerse {
+  Verseid: string;
+  Verse: string;
+}
+
+interface BibleChapter {
+  Verse: BibleVerse[];
+}
+
+interface BibleBookData {
+  Chapter: BibleChapter[];
+}
+
+interface BibleData {
+  Book: BibleBookData[];
+}
+
 // List of books with chapter counts
-export const BIBLE_BOOKS = [
+export const BIBLE_BOOKS: BibleBook[] = [
   // Old Testament
   { name: 'Genesis', chapters: 50, testament: 'old' },
   { name: 'Exodus', chapters: 40, testament: 'old' },
@@ -78,7 +103,6 @@ export const BIBLE_BOOKS = [
 
 // Sample verse content for Genesis 1 (simplified)
 const SAMPLE_VERSES = {
- 
   "Genesis": {
     "1": [
       {
@@ -56832,6 +56856,7 @@ const SAMPLE_VERSES = {
     ]
   },
   "Psalms": {
+  "Psalms": {
     "1": [
       {
         "verse": 1,
@@ -105429,7 +105454,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 42,
-        "text": "David himself says in the book of Psalms, ‘The Lord said to my Lord, “Sit at my right hand,"
+        "text": "David himself says in the book of psalm, ‘The Lord said to my Lord, “Sit at my right hand,"
       },
       {
         "verse": 43,
@@ -106293,7 +106318,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 44,
-        "text": "He said to them, “This is what I told you, while I was still with you, that all things which are written in the law of Moses, the prophets, and the psalms, concerning me must be fulfilled.”"
+        "text": "He said to them, “This is what I told you, while I was still with you, that all things which are written in the law of Moses, the prophets, and the psalm, concerning me must be fulfilled.”"
       },
       {
         "verse": 45,
@@ -109973,7 +109998,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 20,
-        "text": "For it is written in the book of Psalms, ‘Let his habitation be made desolate. Let no one dwell therein;’ and, ‘Let another take his office.’"
+        "text": "For it is written in the book of psalm, ‘Let his habitation be made desolate. Let no one dwell therein;’ and, ‘Let another take his office.’"
       },
       {
         "verse": 21,
@@ -119657,7 +119682,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 19,
-        "text": "speaking to one another in psalms, hymns, and spiritual songs; singing, and making melody in your heart to the Lord;"
+        "text": "speaking to one another in psalm, hymns, and spiritual songs; singing, and making melody in your heart to the Lord;"
       },
       {
         "verse": 20,
@@ -120517,7 +120542,7 @@ const SAMPLE_VERSES = {
       },
       {
         "verse": 16,
-        "text": "Let the word of Christ dwell in you richly; in all wisdom teaching and admonishing one another with psalms, hymns, and spiritual songs, singing with grace in your heart to the Lord."
+        "text": "Let the word of Christ dwell in you richly; in all wisdom teaching and admonishing one another with psalm, hymns, and spiritual songs, singing with grace in your heart to the Lord."
       },
       {
         "verse": 17,

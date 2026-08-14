@@ -1,11 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, Easing } from 'react-native';
 import { Book } from 'lucide-react-native';
-import { useTheme } from '@/context/ThemeContext';
-
-interface SplashScreenProps {
-  onFinish: () => void;
-}
+import { Image } from 'react-native';
 
 export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const { colors } = useTheme();
@@ -55,9 +51,10 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
           },
         ]}
       >
-        <Book size={80} color={colors.primary} />
-        <Text style={[styles.title, { color: colors.text }]}>Holy Bible</Text>
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Wisdom for every day</Text>
+        <Image
+          source={require('../assets/images/splash.png')}
+          resizeMode="center"
+        />
       </Animated.View>
     </View>
   );
