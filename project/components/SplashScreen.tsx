@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, Easing } from 'react-native';
 import { Book } from 'lucide-react-native';
 import { Image } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+
+
 
 export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const { colors } = useTheme();

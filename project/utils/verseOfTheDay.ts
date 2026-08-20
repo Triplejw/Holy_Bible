@@ -52,7 +52,7 @@ function daySeed(date: Date) {
 export function getVerseOfTheDay(date = new Date()): DailyVerse | null {
   const seed = daySeed(date);
   const reference = DAILY_CHAPTERS[seed % DAILY_CHAPTERS.length];
-  const verses = getChapterVerses(reference.book, reference.chapter);
+  const verses = getChapterVerses(reference.book, reference.chapter,);
 
   if (!verses.length) return null;
 
