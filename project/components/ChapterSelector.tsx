@@ -13,21 +13,29 @@ import { X } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 
+interface ChapterSelectorProps {
+  isVisible: boolean;
+  onClose: () => void;
+  totalChapters: number;
+  currentChapter: number;
+  onSelectChapter: (chapter: number) => void;
+}
+
 export default function ChapterSelector({
   isVisible,
   onClose,
   totalChapters,
   currentChapter,
   onSelectChapter,
-}) {
+}: ChapterSelectorProps) {
   const { colors } = useTheme();
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList<number>>(null);
 
   // Generate an array of chapter numbers
   const chapters = Array.from({ length: totalChapters }, (_, i) => i + 1);
   
   // Calculate number of columns based on screen width
-  const numColumns = Math.floor(width / 70);
+  const numColumns = Math.floor((width * 0.8 - 32) / 60); // Account for modal width and padding
 
   useEffect(() => {
     if (isVisible && flatListRef.current) {
@@ -44,7 +52,7 @@ export default function ChapterSelector({
     }
   }, [isVisible, currentChapter]);
 
-  const handleScrollToIndexFailed = (info) => {
+  const handleScrollToIndexFailed = (info: { index: number }) => {
     const wait = new Promise(resolve => setTimeout(resolve, 500));
     wait.then(() => {
       flatListRef.current?.scrollToIndex({ 
@@ -54,7 +62,7 @@ export default function ChapterSelector({
     });
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: number }) => (
     <TouchableOpacity
       style={[
         styles.chapterItem,
@@ -101,6 +109,7 @@ export default function ChapterSelector({
             numColumns={numColumns}
             contentContainerStyle={styles.chapterGrid}
             onScrollToIndexFailed={handleScrollToIndexFailed}
+            columnWrapperStyle={styles.columnWrapper}
           />
         </View>
       </View>
@@ -138,15 +147,19 @@ const styles = StyleSheet.create({
   },
   chapterGrid: {
     paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
+  },
+  columnWrapper: {
+    justifyContent: 'flex-start',
+    paddingHorizontal: 4,
   },
   chapterItem: {
-    margin: 8,
-    width: 50,
-    height: 50,
+    margin: 4,
+    width: 52,
+    height: 52,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 25,
+    borderRadius: 26,
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
   chapterNumber: {

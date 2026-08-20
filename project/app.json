@@ -1,27 +1,47 @@
 {
   "expo": {
-    "name": "Holy Bible",
+    "name": "Holy Bible with Creed and Anthems",
     "slug": "holy-bible",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "backgroundColor": "#FCFDFF",
     "assetBundlePatterns": [
       "**/*"
     ],
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "expo-web-browser",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#FCFDFF",
+          "dark": {
+            "image": "./assets/images/icon.png",
+            "backgroundColor": "#0B0F1A"
+          }
+        }
+      ],
+      "expo-web-browser"
     ],
     "scheme": "holy-bible",
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d4cedd65-b388-427f-acbf-815fb2ca2056"
+      }
+    },
+    "android": {
+      "package": "com.broken99records.holybible"
     }
   }
 }
